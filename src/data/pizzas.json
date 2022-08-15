@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1, 
+        "name": "Pepperoni",
+        "description": "Ya standard issue pepperoni pie.",
+        "price": 10.99
+    },
+    {
+        "id": 2, 
+        "name": "Sausage",
+        "description": "Don't like round flat red meat? Try crumbly brownish grey meat.",
+        "price": 10.99
+    },
+    {
+        "id": 3, 
+        "name": "Veggie",
+        "description": "Killin' animals to gnosh on not your cup o' tea? We'll throw the garden on your pie instead.",
+        "price": 8.99
+    },
+    {
+        "id": 4, 
+        "name": "Supreme",
+        "description": "The veggie, but with more supremacy.",
+        "price": 13.99
+    },
+    {
+        "id": 5, 
+        "name": "Supreme with the Meats",
+        "description": "No moral dilemma for you in your pizza choice AND you like the garden stuff? This one's for you.",
+        "price": 15.99
+    },
+    {
+        "id": 6, 
+        "name": "The Beast",
+        "description": "Everything. Literally every topping we offer here. All the toppings.",
+        "price": 22.99
+    }
+]
