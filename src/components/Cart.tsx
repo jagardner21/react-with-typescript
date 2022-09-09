@@ -1,8 +1,11 @@
 import React from "react";
 import { FiShoppingCart } from "react-icons/fi"
 import CartCSS from "./Cart.module.css"
+import { AppStateContext } from "./AppState"
+import Pizza from "./Pizza";
 
-interface Props {}
+interface Props {
+}
 
 interface State {
     isOpen: boolean
@@ -22,22 +25,28 @@ class Cart extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className={CartCSS.cartContainer}>
-                <button type="button" className={CartCSS.button} onClick={this.handleClick}>
-                    <FiShoppingCart />
-                    <span>2 pizza(s)</span></button>
-                <div 
-                    className={CartCSS.cartDropDown}
-                    style={{
-                        display: this.state.isOpen ? "block" : "none"
-                    }}
-                >
-                    <ul>
-                        <li>Pepperoni</li>
-                        <li>Black Olive</li>
-                    </ul>
-                </div>
-            </div>
+            <AppStateContext.Consumer>{(state) => {
+                return (
+                    <div className={CartCSS.cartContainer}>
+                        <button type="button" className={CartCSS.button} onClick={this.handleClick}>
+                            <FiShoppingCart />
+                            <span>{state.cart.items.length} pizza(s)</span></button>
+                        <div 
+                            className={CartCSS.cartDropDown}
+                            style={{
+                                display: this.state.isOpen ? "block" : "none"
+                            }}
+                        >
+                            <ul>
+                                {state.cart.items.map(item => {
+                                    return <li key={item.id}>{item.name}</li>
+                                })}
+                            </ul>
+                        </div>
+                    </div>
+                )
+                
+            }}</AppStateContext.Consumer>
         )
     }
 }

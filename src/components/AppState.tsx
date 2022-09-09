@@ -1,23 +1,36 @@
-// import React, { createContext, useState } from "react";
+import React, { createContext, useState } from "react";
 
-// interface AppStateValue {
-//     cart: {
-//         items: {
-//             name: string
-//             price: number
-//         }[]
-//     }
-// }
+interface Props {
+    children: React.ReactNode
+}
 
-// const defaultStateValue: AppStateValue = {
-//     cart: {
-//         items: []
-//     }
-// }
+interface AppStateValue {
+    cart: {
+        items: {
+            name: string
+            price: number
+            id: number
+        }[]
+    }
+}
 
-// export const AppStateContext = createContext(defaultStateValue)
+const defaultStateValue: AppStateValue = {
+    cart: {
+        items: []
+    }
+}
 
-// const AppStateProvider: React.FC = () => {
-//     const [state, setState] = useState(defaultStateValue)
-//     return <AppStateContext.Provider value={}></AppStateContext.Provider>
-// }
+export const AppStateContext = createContext(defaultStateValue)
+
+export const AppSetStateContext = createContext<React.Dispatch<React.SetStateAction<AppStateValue>> | undefined>(undefined)
+
+const AppStateProvider: React.FC<Props> = ({ children }) => {
+    const [state, setState] = useState(defaultStateValue)
+    return (
+        <AppStateContext.Provider value={state}>
+            <AppSetStateContext.Provider value={setState}>{children}</AppSetStateContext.Provider>
+        </AppStateContext.Provider>
+    )
+}
+
+export default AppStateProvider
