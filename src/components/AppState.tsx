@@ -1,17 +1,19 @@
-import React, { createContext, useState, useContext, PropsWithChildren } from "react";
+import React, { createContext, useContext, PropsWithChildren, useReducer } from "react";
 
 interface AppStateProviderProps {
     children: React.ReactNode;
 }
-    
+
+interface CartItem {
+    name: string
+    price: number
+    id: number
+    quantity: number
+}    
 
 interface AppStateValue {
     cart: {
-        items: {
-            name: string
-            price: number
-            id: number
-        }[]
+        items: CartItem[]
     }
 }
 
@@ -23,23 +25,56 @@ const defaultStateValue: AppStateValue = {
 
 export const AppStateContext = createContext(defaultStateValue)
 
-export const AppSetStateContext = createContext<React.Dispatch<React.SetStateAction<AppStateValue>> | undefined>(undefined)
+export const AppDispatchContext = createContext<React.Dispatch<AddToCartAction> | undefined>(undefined)
 
-export const useSetState = () => {
-    const setState = useContext(AppSetStateContext)
-    if (!setState){
-        throw new Error("useSetState hook called outside of the AppSetStateContext provider.")
+interface Action<T>{
+    type: T
+}
+
+interface AddToCartAction extends Action<'ADD_TO_CART'>{
+    payload: {
+        item: Omit<CartItem, 'quantity'>
     }
-    return setState
+}
+
+const reducer = (state: AppStateValue, action: AddToCartAction) => {
+    if(action.type === 'ADD_TO_CART'){
+        const itemToAdd = action.payload.item
+        const itemExists = state.cart.items.find((item) => item.id === itemToAdd.id)
+            return {
+                ...state,
+                cart: {
+                    ...state.cart, 
+                    items: itemExists
+                        ? state.cart.items.map((item) => {
+                            if(item.id === itemToAdd.id) {
+                                return { ...item, quantity: item.quantity + 1 }
+                            }
+                            return item
+                        })
+                        : [...state.cart.items, {...itemToAdd, quantity: 1}]
+                }
+            }
+    }
+
+    return state
+}
+
+export const useStateDispatch = () => {
+    const dispatch = useContext(AppDispatchContext)
+    if (!dispatch){
+        throw new Error("useStateDispatch hook called outside of the AppDispatchContext provider.")
+    }
+    return dispatch
 }
 
 const AppStateProvider: React.FC<AppStateProviderProps> = (props:AppStateProviderProps) => {
-    const [state, setState] = useState(defaultStateValue);
+    const [state, dispatch] = useReducer(reducer, defaultStateValue);
     return (
     <AppStateContext.Provider value={state}>
-        <AppSetStateContext.Provider value={setState}>
+        <AppDispatchContext.Provider value={dispatch}>
     	    {props.children}
-	    </AppSetStateContext.Provider>
+	    </AppDispatchContext.Provider>
     </AppStateContext.Provider>
     );
 };
